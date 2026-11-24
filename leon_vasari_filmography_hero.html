@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leon Vasari — Filmography Hero</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Noto+Sans+JP:wght@500&family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS Variables & Palette Tokens */
+    :root {
+      --paper: #EDEBE6;
+      --sheet: #F4F2ED;
+      --ink: #141414;
+      --muted: #6D6A63;
+      --cobalt: #1F3FB0;
+      --rule: rgba(20, 20, 20, 0.9);
+      --ease: cubic-bezier(.2, .8, .2, 1);
+      --H: min(46vh, 31vw);
+      --ws: 0px;
+      --d: 0px;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --H: min(60vw, 40svh);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Inter Tight", "Noto Sans JP", system-ui, sans-serif;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    @media (pointer: fine) {
+      html, body, button, a, div {
+        cursor: none !important;
+      }
+    }
+
+    /* Typography & Label Utility System */
+    .lbl {
+      font-family: "Inter Tight", "Noto Sans JP", sans-serif;
+      font-weight: 600;
+      font-size: 10.5px;
+      line-height: 1;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 21px;
+      padding: 0 8px;
+      border: 1px solid var(--rule);
+      background: transparent;
+      color: var(--ink);
+      text-decoration: none;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+
+    /* Paper Grain Overlay */
+    #grain-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 40;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      opacity: 0.55;
+    }
+
+    /* Custom Cursor */
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 58px;
+      height: 58px;
+      margin-left: -29px;
+      margin-top: -29px;
+      pointer-events: none;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (pointer: fine) {
+      #custom-cursor {
+        display: flex;
+      }
+    }
+
+    .cursor-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      background: transparent;
+      transition: transform 0.5s var(--ease), background-color 0.4s var(--ease), border-color 0.4s var(--ease);
+      transform: scale(1);
+    }
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--ink);
+      transition: transform 0.4s var(--ease);
+      transform: scale(1);
+    }
+
+    .cursor-label {
+      position: absolute;
+      color: #FFFFFF;
+      font-family: "Inter Tight", "Noto Sans JP", sans-serif;
+      font-weight: 600;
+      font-size: 10px;
+      line-height: 1.25;
+      letter-spacing: 0.1em;
+      text-align: center;
+      transition: transform 0.45s var(--ease);
+      transform: scale(0);
+      pointer-events: none;
+    }
+
+    /* Cursor States */
+    #custom-cursor.state-spine .cursor-ring { transform: scale(0.72); }
+    #custom-cursor.state-spine .cursor-dot { transform: scale(1); }
+
+    #custom-cursor.state-btn .cursor-ring { transform: scale(0.55); }
+    #custom-cursor.state-btn .cursor-dot { transform: scale(0); }
+
+    #custom-cursor.state-open .cursor-ring {
+      transform: scale(1.75);
+      background-color: var(--cobalt);
+      border-color: var(--cobalt);
+    }
+    #custom-cursor.state-open .cursor-dot { transform: scale(0); }
+    #custom-cursor.state-open .cursor-label { transform: scale(1); }
+
+    /* Top Bar Layout */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 84px;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      z-index: 30;
+    }
+
+    .top-left {
+      justify-self: start;
+    }
+
+    .top-centre {
+      justify-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      color: var(--cobalt);
+      text-decoration: none;
+    }
+
+    .logo-kanji {
+      font-family: "Noto Serif SC", serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-latin {
+      font-family: "Inter Tight", sans-serif;
+      font-weight: 600;
+      font-size: 9px;
+      line-height: 1;
+      letter-spacing: 0.34em;
+      padding-left: 0.34em;
+    }
+
+    .top-right {
+      justify-self: end;
+      color: var(--ink);
+    }
+
+    /* Decade Tabs */
+    .decade-tabs-container {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(50% - var(--H) / 2 - 86px);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+    }
+
+    .decade-tabs {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .tab-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 23px;
+      background-color: var(--cobalt);
+      transition: transform 0.6s var(--ease), width 0.6s var(--ease);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tab-btn {
+      position: relative;
+      z-index: 2;
+      height: 23px;
+      padding: 0 11px;
+      border: 1px solid var(--rule);
+      margin-left: -1px;
+      background: transparent;
+      color: var(--ink);
+      font-family: "Inter Tight", "Noto Sans JP", sans-serif;
+      font-weight: 600;
+      font-size: 10.5px;
+      line-height: 1;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      transition: color 0.45s var(--ease);
+      outline: none;
+      white-space: nowrap;
+    }
+
+    .tab-btn:first-child {
+      margin-left: 0;
+    }
+
+    .tab-btn.active {
+      color: #FFFFFF;
+    }
+
+    /* 3D Shelf Stage */
+    .shelf-section {
+      position: fixed;
+      left: 0;
+      width: 100vw;
+      top: calc(50% - var(--H) / 2 - 40px);
+      height: calc(var(--H) + 80px);
+      perspective: 2200px;
+      perspective-origin: 50% 50%;
+      touch-action: pan-y;
+      z-index: 10;
+    }
+
+    .stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 0;
+      height: 0;
+      transform-style: preserve-3d;
+    }
+
+    .tape {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .face {
+      position: absolute;
+      top: calc(-1 * var(--H) / 2);
+      height: var(--H);
+      backface-visibility: hidden;
+      border-radius: 2px;
+      background-repeat: no-repeat;
+      overflow: hidden;
+    }
+
+    .face::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: #000000;
+      opacity: var(--shade, 0);
+      pointer-events: none;
+    }
+
+    .sp {
+      width: var(--ws);
+      left: calc(-1 * var(--ws) / 2);
+      transform: translateZ(calc(var(--d) / 2));
+    }
+
+    .cv {
+      width: var(--d);
+      left: calc(-1 * var(--d) / 2);
+      transform: rotateY(90deg) translateZ(calc(var(--ws) / 2));
+      box-shadow: 0 30px 60px -28px rgba(20, 16, 10, 0.55);
+    }
+
+    /* Play Ring */
+    #play-ring {
+      position: fixed;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--cobalt);
+      background-color: rgba(237, 235, 230, 0.75);
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0);
+      pointer-events: auto;
+      will-change: transform, left, top;
+    }
+
+    #play-ring::after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 6px 0 6px 11px;
+      border-color: transparent transparent transparent var(--cobalt);
+      margin-left: 2px;
+    }
+
+    /* Captions */
+    .caption-container {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(50% + var(--H) / 2 + 30px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      pointer-events: none;
+      z-index: 25;
+      width: min(92vw, 760px);
+    }
+
+    .caption-mask {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mask-title { height: 38px; }
+    .mask-subtitle { height: 16px; }
+    .mask-year { height: 14px; }
+
+    .caption-line {
+      display: block;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+
+    .caption-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 31px;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .caption-subtitle {
+      font-family: "Inter Tight", "Noto Sans JP", sans-serif;
+      font-weight: 500;
+      font-size: 10.5px;
+      line-height: 1;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--cobalt);
+    }
+
+    .caption-year {
+      font-family: "Inter Tight", sans-serif;
+      font-weight: 500;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+    }
+
+    /* Arrow Buttons */
+    .arrow-btn {
+      position: fixed;
+      top: calc(50% + var(--H) / 2 + 40px);
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      outline: none;
+    }
+
+    .arrow-btn-left { left: 20px; }
+    .arrow-btn-right { right: 20px; }
+
+    .arrow-btn svg {
+      width: 18px;
+      height: 10px;
+      stroke: currentColor;
+      stroke-width: 1.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 26px;
+      left: 32px;
+      right: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 30;
+      color: var(--ink);
+    }
+
+    .footer-links a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    /* Off-screen height probe */
+    #height-probe {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+      height: var(--H);
+      width: 1px;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* Detail Sheet Overlay */
+    #detail-sheet {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--sheet);
+      z-index: 60;
+      display: none;
+      transform-origin: 0 0;
+      overflow-y: auto;
+      will-change: transform, clip-path;
+    }
+
+    .detail-top-bar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 84px;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .detail-body {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 20px 32px 80px;
+      display: grid;
+      grid-template-columns: 474px 1fr;
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 120px);
+    }
+
+    @media (max-width: 900px) {
+      .detail-body {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .detail-poster-container {
+        max-width: 360px;
+        margin: 0 auto;
+      }
+    }
+
+    .detail-poster-container {
+      width: 100%;
+      aspect-ratio: 474 / 900;
+      position: relative;
+    }
+
+    .detail-poster-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .detail-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .text-mask-wrapper {
+      overflow: hidden;
+      width: 100%;
+      display: block;
+    }
+
+    .detail-meta {
+      color: var(--muted);
+    }
+
+    .detail-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 52px;
+      line-height: 1.05;
+      color: var(--ink);
+    }
+
+    @media (max-width: 768px) {
+      .detail-title { font-size: 38px; }
+      .top-right { display: none; }
+    }
+
+    .detail-japanese {
+      color: var(--cobalt);
+    }
+
+    .detail-synopsis {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--ink);
+      max-width: 44ch;
+    }
+
+    .detail-credit {
+      font-family: "Newsreader", Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .watch-btn {
+      height: 38px;
+      padding: 0 20px;
+      background-color: var(--cobalt);
+      color: #FFFFFF;
+      border: none;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .watch-btn span {
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Paper Grain Overlay -->
+  <svg id="grain-overlay">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.45  0 0 0 0 0.42  0 0 0 0 0.38  0 0 0 0.22 0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-filter)" />
+  </svg>
+
+  <!-- Custom Cursor -->
+  <div id="custom-cursor">
+    <div class="cursor-ring"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-label">OPEN<br>開く</div>
+  </div>
+
+  <!-- Off-screen Height Probe -->
+  <div id="height-probe"></div>
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="top-left">
+      <a href="#" class="lbl box btn-target" onclick="event.preventDefault();">BACK / 戻る</a>
+    </div>
+    <a href="#" class="top-centre btn-target" onclick="event.preventDefault();">
+      <span class="logo-kanji">莱昂·瓦萨里</span>
+      <span class="logo-latin">LEON VASARI</span>
+    </a>
+    <div class="top-right lbl">
+      CAREER 1958年〜1989年
+    </div>
+  </header>
+
+  <!-- Decade Tabs -->
+  <div class="decade-tabs-container">
+    <div class="decade-tabs" id="decade-tabs">
+      <div class="tab-indicator" id="tab-indicator"></div>
+      <button class="tab-btn btn-target" data-decade="all">All / すべて</button>
+      <button class="tab-btn btn-target" data-decade="1950s">1950s</button>
+      <button class="tab-btn btn-target" data-decade="1960s">1960s</button>
+      <button class="tab-btn btn-target" data-decade="1970s">1970s</button>
+      <button class="tab-btn btn-target" data-decade="1980s">1980s</button>
+    </div>
+  </div>
+
+  <!-- 3D Shelf Section -->
+  <section class="shelf-section" id="shelf-section">
+    <div class="stage" id="stage"></div>
+  </section>
+
+  <!-- Play Ring -->
+  <div id="play-ring" class="btn-target" title="Open Film"></div>
+
+  <!-- Captions -->
+  <div class="caption-container">
+    <div class="caption-mask mask-title" id="mask-title">
+      <span class="caption-line caption-title" id="title-line"></span>
+    </div>
+    <div class="caption-mask mask-subtitle" id="mask-subtitle">
+      <span class="caption-line caption-subtitle" id="subtitle-line"></span>
+    </div>
+    <div class="caption-mask mask-year" id="mask-year">
+      <span class="caption-line caption-year" id="year-line"></span>
+    </div>
+  </div>
+
+  <!-- Arrow Buttons -->
+  <button class="arrow-btn arrow-btn-left btn-target" id="arrow-left" aria-label="Previous Film">
+    <svg viewBox="0 0 18 10"><path d="M5 1 L1 5 L5 9 M1 5 L17 5"/></svg>
+  </button>
+  <button class="arrow-btn arrow-btn-right btn-target" id="arrow-right" aria-label="Next Film">
+    <svg viewBox="0 0 18 10"><path d="M13 1 L17 5 L13 9 M17 5 L1 5"/></svg>
+  </button>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="lbl">© LEON VASARI. ALL RIGHTS RESERVED.</div>
+    <div class="lbl footer-links">
+      <a href="#" class="btn-target" onclick="event.preventDefault();">FB</a> / <a href="#" class="btn-target" onclick="event.preventDefault();">TW</a>
+    </div>
+  </footer>
+
+  <!-- Detail Sheet -->
+  <div id="detail-sheet">
+    <div class="detail-top-bar">
+      <div>
+        <button class="lbl box btn-target" id="close-detail-btn">CLOSE / 閉じる</button>
+      </div>
+      <div class="top-centre">
+        <span class="logo-kanji">莱昂·瓦萨里</span>
+        <span class="logo-latin">LEON VASARI</span>
+      </div>
+      <div class="top-right lbl" id="detail-cat-index">
+        NO. 06 / 12
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-poster-container">
+        <svg class="detail-poster-svg" viewBox="0 0 474 900">
+          <defs>
+            <clipPath id="inkClip">
+              <circle id="ink-c1" cx="237" cy="450" r="0" />
+              <circle id="ink-c2" cx="100" cy="200" r="0" />
+              <circle id="ink-c3" cx="380" cy="250" r="0" />
+              <circle id="ink-c4" cx="80" cy="700" r="0" />
+              <circle id="ink-c5" cx="400" cy="750" r="0" />
+              <circle id="ink-c6" cx="237" cy="100" r="0" />
+              <circle id="ink-c7" cx="237" cy="800" r="0" />
+            </clipPath>
+          </defs>
+          <g clip-path="url(#inkClip)">
+            <image id="detail-poster-image" href="" x="0" y="0" width="474" height="900" preserveAspectRatio="none" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="detail-info">
+        <div class="text-mask-wrapper">
+          <div class="detail-meta lbl" id="detail-meta">1971 · WESTERN · 112 MIN</div>
+        </div>
+        <div class="text-mask-wrapper">
+          <div class="detail-title" id="detail-title">Noon in Ashes</div>
+        </div>
+        <div class="text-mask-wrapper">
+          <div class="detail-japanese lbl" id="detail-japanese">HAI NO SHOGO / 灰の正午</div>
+        </div>
+        <div class="text-mask-wrapper">
+          <div class="detail-synopsis" id="detail-synopsis">
+            A rider crosses a white desert to settle an old debt, and learns too late who sent him.
+          </div>
+        </div>
+        <div class="text-mask-wrapper">
+          <div class="detail-credit" id="detail-credit">Written and directed by Leon Vasari</div>
+        </div>
+        <div class="text-mask-wrapper" style="margin-top: 10px;">
+          <button class="watch-btn btn-target">
+            <span class="lbl">WATCH FILM / 映画を見る</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       MEDIA & ASSET SPECIFICATIONS
+       ========================================================================== */
+    const SHEETS = {
+      covers: ["https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261029_010644_837e04ca-2418-45c1-b8e0-0233265c4cd5.png&w=1744&q=85", 1744, 2336],
+      spines: ["https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261029_010738_a3e47ead-18f2-4974-9468-06d16a25edc5.png&w=2688&q=85", 2688, 1152],
+      fix:    ["https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261029_010831_3ebb874b-93dc-433e-87ed-6299aba720f0.png&w=1520&q=85", 1520, 2688],
+      fix2:   ["https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261029_092020_f96bc094-db7b-46de-9298-074a24e0a3b8.png&w=1520&q=85", 1520, 2688]
+    };
+
+    const CROPS = {
+      'spine-valley':   ['spines', 266, 31, 189, 1089],  'cover-valley':   ['covers', 497, 72, 344, 659],
+      'spine-bluehour': ['spines', 492, 31, 189, 1089],  'cover-bluehour': ['covers', 914, 72, 342, 659],
+      'spine-river':    ['fix', 197, 54, 324, 2566],     'cover-river':    ['covers', 1332, 72, 344, 659],
+      'spine-summer':   ['spines', 937, 31, 188, 1089],  'cover-summer':   ['covers', 74, 813, 344, 676],
+      'spine-green':    ['spines', 1157, 31, 185, 1090], 'cover-green':    ['covers', 497, 815, 344, 674],
+      'spine-noon':     ['spines', 44, 32, 184, 1088],   'cover-noon':     ['covers', 74, 72, 347, 659],
+      'spine-observer': ['fix2', 371, 15, 349, 2655],   'cover-observer': ['covers', 915, 815, 342, 675],
+      'spine-birds':    ['spines', 1573, 31, 183, 1089], 'cover-birds':    ['covers', 1331, 815, 345, 675],
+      'spine-storm':    ['fix2', 808, 15, 347, 2656],   'cover-storm':    ['covers', 74, 1571, 345, 681],
+      'spine-tide':     ['spines', 2012, 31, 188, 1089], 'cover-tide':     ['covers', 496, 1577, 343, 678],
+      'spine-war':      ['spines', 2236, 31, 189, 1089], 'cover-war':      ['covers', 913, 1579, 343, 676],
+      'spine-door':     ['spines', 2462, 31, 188, 1089], 'cover-door':     ['covers', 1331, 1579, 344, 677]
+    };
+
+    const FILMS = [
+      { id: 'valley', title: 'The Silent Valley', romaji: 'SHIZUKANA TANI', kanji: '静かな谷', year: '1958', genre: 'Drama', mins: 104, synopsis: 'A schoolteacher returns to the mountain village that exiled her father, and finds the valley has kept every one of its secrets.' },
+      { id: 'bluehour', title: 'The Blue Hour', romaji: 'AO NO TOKI', kanji: '青の刻', year: '1962', genre: 'Romance', mins: 97, synopsis: 'Over one long evening in a harbour town, a widow and a stranger trade small lies until the light runs out.' },
+      { id: 'river', title: 'River of Salt', romaji: 'SHIO NO KAWA', kanji: '塩の川', year: '1964', genre: 'Drama', mins: 121, synopsis: 'Two brothers drag a salt barge downriver to a city that no longer wants anything they carry.' },
+      { id: 'summer', title: 'The Last Summer', romaji: 'SAIGO NO NATSU', kanji: '最後の夏', year: '1966', genre: 'Drama', mins: 109, synopsis: 'The summer before the dam floods their village, three friends set fire to everything they cannot take with them.' },
+      { id: 'green', title: 'The Green Road', romaji: 'MIDORI NO MICHI', kanji: '緑の道', year: '1969', genre: 'Mystery', mins: 101, synopsis: 'A surveyor mapping a forest road keeps finding the same footprints, always one day ahead of him.' },
+      { id: 'noon', title: 'Noon in Ashes', romaji: 'HAI NO SHOGO', kanji: '灰の正午', year: '1971', genre: 'Western', mins: 112, synopsis: 'A rider crosses a white desert to settle an old debt, and learns too late who sent him.' },
+      { id: 'observer', title: 'The Observer', romaji: 'KANSATSUSHA', kanji: '観察者', year: '1973', genre: 'Thriller', mins: 96, synopsis: 'A night watchman begins to suspect that the building he guards has started watching him back.' },
+      { id: 'birds', title: 'The Fallen Birds', romaji: 'OCHITA TORI', kanji: '落ちた鳥', year: '1975', genre: 'Drama', mins: 118, synopsis: 'When the birds stop singing along the coast, a fisherman\'s daughter is the only one who notices they haven\'t left.' },
+      { id: 'storm', title: 'Light in the Storm', romaji: 'ARASHI NO HIKARI', kanji: '嵐の光', year: '1978', genre: 'Drama', mins: 130, synopsis: 'Stranded in a mountain observatory during a three-day typhoon, two rival astronomers must share a single telescope.' },
+      { id: 'tide', title: 'The Iron Tide', romaji: 'TETSU NO SHIO', kanji: '鉄の潮', year: '1981', genre: 'Thriller', mins: 114, synopsis: 'A shipyard welder discovers contraband welded inside the hull of a vessel scheduled to sail at dawn.' },
+      { id: 'war', title: 'After the War', romaji: 'SENSO NO ATO', kanji: '戦後のあと', year: '1985', genre: 'Drama', mins: 126, synopsis: 'Ten years after the armistice, a former cartographer is hired to redraw a border that no longer exists.' },
+      { id: 'door', title: 'The Last Door', romaji: 'SAIGO NO TOBIRA', kanji: '最後の扉', year: '1989', genre: 'Mystery', mins: 108, synopsis: 'An archivist cataloguing an abandoned theatre finds a locked dressing room whose key is still warm.' }
+    ];
+
+    /* Preload Image Sheets */
+    Object.values(SHEETS).forEach(sheet => {
+      const img = new Image();
+      img.src = sheet[0];
+    });
+
+    /* ==========================================================================
+       STATE & MATH HELPERS
+       ========================================================================== */
+    let targetIndex = 5; // Start at Noon in Ashes (1971)
+    let currentScroll = 5;
+    let activeFilmIndex = 5;
+    let isDetailOpen = false;
+
+    // Mouse & Cursor state
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let cx = mx;
+    let cy = my;
+    let cursorState = 'default';
+
+    // Tilt smoothing
+    let currentTiltX = 0;
+    let currentTiltY = 0;
+
+    // Hover lift values for 36 tapes
+    const tapeLifts = new Array(36).fill(0);
+    const tapeLiftTargets = new Array(36).fill(0);
+
+    const smoothstep = (x) => {
+      x = Math.max(0, Math.min(1, x));
+      return x * x * (3 - 2 * x);
+    };
+
+    function getH() {
+      const probe = document.getElementById('height-probe');
+      return probe.getBoundingClientRect().height || 300;
+    }
+
+    function getDimensions() {
+      const H = getH();
+      const ws = H * (142 / 840);
+      const d = H * (474 / 900);
+      const gap = H * 0.03;
+      return { H, ws, d, gap };
+    }
+
+    function getCropStyle(cropKey) {
+      const [sheetId, x, y, w, h] = CROPS[cropKey];
+      const [url, W, H] = SHEETS[sheetId];
+      const bgSizeX = (W / w) * 100;
+      const bgSizeY = (H / h) * 100;
+      const bgPosX = (x / (W - w)) * 100;
+      const bgPosY = (y / (H - h)) * 100;
+      return {
+        backgroundImage: `url("${url}")`,
+        backgroundSize: `${bgSizeX}% ${bgSizeY}%`,
+        backgroundPosition: `${bgPosX}% ${bgPosY}%`
+      };
+    }
+
+    /* ==========================================================================
+       STAGE & TAPE CREATION
+       ========================================================================== */
+    const stage = document.getElementById('stage');
+    const tapeElements = [];
+
+    function buildStage() {
+      stage.innerHTML = '';
+      tapeElements.length = 0;
+
+      for (let v = 0; v < 36; v++) {
+        const filmIndex = v % 12;
+        const film = FILMS[filmIndex];
+
+        const tape = document.createElement('div');
+        tape.className = 'tape';
+        tape.dataset.v = v;
+
+        const spineFace = document.createElement('div');
+        spineFace.className = 'face sp';
+        const spineStyle = getCropStyle(`spine-${film.id}`);
+        Object.assign(spineFace.style, spineStyle);
+
+        const coverFace = document.createElement('div');
+        coverFace.className = 'face cv';
+        const coverStyle = getCropStyle(`cover-${film.id}`);
+        Object.assign(coverFace.style, coverStyle);
+
+        tape.appendChild(spineFace);
+        tape.appendChild(coverFace);
+        stage.appendChild(tape);
+
+        tapeElements.push(tape);
+
+        // Hover tracking
+        tape.addEventListener('pointerenter', () => {
+          tapeLiftTargets[v] = 1;
+        });
+        tape.addEventListener('pointerleave', () => {
+          tapeLiftTargets[v] = 0;
+        });
+
+        // Spine Click
+        tape.addEventListener('click', (e) => {
+          if (isDragging) return;
+          e.stopPropagation();
+          const r = ((v - currentScroll) % 36 + 54) % 36 - 18;
+          if (Math.abs(r) < 0.5) {
+            openDetail();
+          } else {
+            scrollToVirtualIndex(v);
+          }
+        });
+      }
+    }
+
+    function scrollToVirtualIndex(v) {
+      // Find shortest path to virtual index v relative to current scroll
+      let delta = (v - currentScroll) % 36;
+      if (delta > 18) delta -= 36;
+      if (delta < -18) delta += 36;
+      targetIndex = currentScroll + delta;
+    }
+
+    /* ==========================================================================
+       DECADE TABS & CAPTION MANAGEMENT
+       ========================================================================== */
+    const tabIndicator = document.getElementById('tab-indicator');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    function updateDecadeIndicator(filmIdx) {
+      const film = FILMS[filmIdx];
+      const decade = film.year.substring(0, 3) + '0s';
+
+      let targetBtn = null;
+      tabBtns.forEach(btn => {
+        if (btn.dataset.decade === decade) {
+          targetBtn = btn;
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      if (targetBtn) {
+        tabIndicator.style.width = `${targetBtn.offsetWidth}px`;
+        tabIndicator.style.transform = `translateX(${targetBtn.offsetLeft}px)`;
+      }
+    }
+
+    // Tab Clicks
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dec = btn.dataset.decade;
+        if (dec === 'all') {
+          targetIndex = Math.round(targetIndex) + 1;
+        } else {
+          const targetFilmIdx = FILMS.findIndex(f => f.year.startsWith(dec.substring(0, 3)));
+          if (targetFilmIdx !== -1) {
+            let delta = (targetFilmIdx - (activeFilmIndex)) % 12;
+            if (delta > 6) delta -= 12;
+            if (delta < -6) delta += 12;
+            targetIndex = currentScroll + delta;
+          }
+        }
+      });
+    });
+
+    // Caption Swap Logic with WAAPI
+    let lastCaptionFilmIndex = -1;
+
+    function swapCaptionLine(maskId, newText, dir) {
+      const mask = document.getElementById(maskId);
+      const oldSpans = Array.from(mask.querySelectorAll('.caption-line'));
+      const newSpan = document.createElement('span');
+      newSpan.className = oldSpans[0].className;
+      newSpan.textContent = newText;
+      mask.appendChild(newSpan);
+
+      // Slide in new span
+      newSpan.animate([
+        { transform: `translateY(${dir * 105}%)` },
+        { transform: 'translateY(0%)' }
+      ], {
+        duration: 650,
+        easing: 'cubic-bezier(.2, .8, .2, 1)',
+        fill: 'both'
+      });
+
+      // Slide out old spans
+      oldSpans.forEach(oldSpan => {
+        oldSpan.style.position = 'absolute';
+        oldSpan.style.inset = '0';
+        const anim = oldSpan.animate([
+          { transform: 'translateY(0%)' },
+          { transform: `translateY(${-dir * 105}%)` }
+        ], {
+          duration: 650,
+          easing: 'cubic-bezier(.2, .8, .2, 1)',
+          fill: 'both'
+        });
+        anim.onfinish = () => oldSpan.remove();
+      });
+    }
+
+    function updateCaption(filmIdx, dir) {
+      if (filmIdx === lastCaptionFilmIndex) return;
+      lastCaptionFilmIndex = filmIdx;
+
+      const film = FILMS[filmIdx];
+      swapCaptionLine('mask-title', film.title, dir);
+      swapCaptionLine('mask-subtitle', `${film.romaji} / ${film.kanji}`, dir);
+      swapCaptionLine('mask-year', film.year, dir);
+
+      updateDecadeIndicator(filmIdx);
+    }
+
+    // Initial caption setup
+    document.getElementById('title-line').textContent = FILMS[5].title;
+    document.getElementById('subtitle-line').textContent = `${FILMS[5].romaji} / ${FILMS[5].kanji}`;
+    document.getElementById('year-line').textContent = FILMS[5].year;
+    lastCaptionFilmIndex = 5;
+
+    /* ==========================================================================
+       DETAIL SHEET MECHANICS
+       ========================================================================== */
+    const detailSheet = document.getElementById('detail-sheet');
+    const closeDetailBtn = document.getElementById('close-detail-btn');
+    let activeCoverRect = null;
+
+    function openDetail() {
+      if (isDetailOpen) return;
+      isDetailOpen = true;
+
+      const film = FILMS[activeFilmIndex];
+
+      // Update Detail Content
+      document.getElementById('detail-cat-index').textContent = `NO. ${String(activeFilmIndex + 1).padStart(2, '0')} / 12`;
+      document.getElementById('detail-meta').textContent = `${film.year} · ${film.genre.toUpperCase()} · ${film.mins} MIN`;
+      document.getElementById('detail-title').textContent = film.title;
+      document.getElementById('detail-japanese').textContent = `${film.romaji} / ${film.kanji}`;
+      document.getElementById('detail-synopsis').textContent = film.synopsis;
+
+      // SVG Poster cropping mapping
+      const [sheetId, x, y, w, h] = CROPS[`cover-${film.id}`];
+      const [url, W, H] = SHEETS[sheetId];
+      const posterImg = document.getElementById('detail-poster-image');
+      posterImg.setAttribute('href', url);
+      posterImg.setAttribute('x', -x * 474 / w);
+      posterImg.setAttribute('y', -y * 900 / h);
+      posterImg.setAttribute('width', W * 474 / w);
+      posterImg.setAttribute('height', H * 900 / h);
+
+      // Get open cover bounding box
+      const activeTape = tapeElements.find(t => {
+        const v = parseInt(t.dataset.v);
+        const r = ((v - currentScroll) % 36 + 54) % 36 - 18;
+        return Math.abs(r) < 0.5;
+      });
+      const coverFace = activeTape ? activeTape.querySelector('.cv') : null;
+      if (coverFace) {
+        activeCoverRect = coverFace.getBoundingClientRect();
+      } else {
+        activeCoverRect = { left: window.innerWidth / 2 - 100, top: window.innerHeight / 2 - 150, width: 200, height: 300 };
+      }
+
+      detailSheet.style.display = 'block';
+
+      // Animation parameters: Expand sheet from active cover rect + tilt
+      const startX = activeCoverRect.left;
+      const startY = activeCoverRect.top;
+      const startW = activeCoverRect.width;
+      const startH = activeCoverRect.height;
+      const endW = window.innerWidth;
+      const endH = window.innerHeight;
+
+      const scaleX = startW / endW;
+      const scaleY = startH / endH;
+
+      detailSheet.animate([
+        {
+          transform: `translate3d(${startX}px, ${startY}px, 0px) scale(${scaleX}, ${scaleY}) rotateZ(-4.5deg)`,
+          transformOrigin: '0 0'
+        },
+        {
+          transform: `translate3d(0px, 0px, 0px) scale(1, 1) rotateZ(0deg)`,
+          transformOrigin: '0 0'
+        }
+      ], {
+        duration: 700,
+        easing: 'cubic-bezier(.2, .8, .2, 1)',
+        fill: 'both'
+      });
+
+      // Ink Blot Circle Reveals inside SVG Poster
+      const inkCircles = [
+        { id: 'ink-c1', maxR: 600, delay: 0 },
+        { id: 'ink-c2', maxR: 500, delay: 50 },
+        { id: 'ink-c3', maxR: 500, delay: 100 },
+        { id: 'ink-c4', maxR: 500, delay: 150 },
+        { id: 'ink-c5', maxR: 500, delay: 200 },
+        { id: 'ink-c6', maxR: 450, delay: 240 },
+        { id: 'ink-c7', maxR: 450, delay: 280 }
+      ];
+
+      inkCircles.forEach(c => {
+        const el = document.getElementById(c.id);
+        el.animate([
+          { r: 0 },
+          { r: c.maxR }
+        ], {
+          duration: 850,
+          delay: c.delay,
+          easing: 'cubic-bezier(.2, .8, .2, 1)',
+          fill: 'both'
+        });
+      });
+
+      // Mask Slide Reveals for Detail Text Lines
+      const textWrappers = detailSheet.querySelectorAll('.text-mask-wrapper > *');
+      textWrappers.forEach((el, idx) => {
+        el.animate([
+          { transform: 'translateY(105%)' },
+          { transform: 'translateY(0%)' }
+        ], {
+          duration: 650,
+          delay: 150 + idx * 60,
+          easing: 'cubic-bezier(.2, .8, .2, 1)',
+          fill: 'both'
+        });
+      });
+    }
+
+    function closeDetail() {
+      if (!isDetailOpen) return;
+
+      const startX = activeCoverRect ? activeCoverRect.left : window.innerWidth / 2 - 100;
+      const startY = activeCoverRect ? activeCoverRect.top : window.innerHeight / 2 - 150;
+      const startW = activeCoverRect ? activeCoverRect.width : 200;
+      const startH = activeCoverRect ? activeCoverRect.height : 300;
+      const endW = window.innerWidth;
+      const endH = window.innerHeight;
+
+      const scaleX = startW / endW;
+      const scaleY = startH / endH;
+
+      const anim = detailSheet.animate([
+        {
+          transform: `translate3d(0px, 0px, 0px) scale(1, 1) rotateZ(0deg)`,
+          transformOrigin: '0 0'
+        },
+        {
+          transform: `translate3d(${startX}px, ${startY}px, 0px) scale(${scaleX}, ${scaleY}) rotateZ(-4.5deg)`,
+          transformOrigin: '0 0'
+        }
+      ], {
+        duration: 550,
+        easing: 'cubic-bezier(.2, .8, .2, 1)',
+        fill: 'both'
+      });
+
+      anim.onfinish = () => {
+        detailSheet.style.display = 'none';
+        isDetailOpen = false;
+      };
+    }
+
+    closeDetailBtn.addEventListener('click', closeDetail);
+    document.getElementById('play-ring').addEventListener('click', openDetail);
+
+    /* ==========================================================================
+       INPUT & NAVIGATION LISTENERS
+       ========================================================================== */
+    // Buttons & Arrows
+    document.getElementById('arrow-left').addEventListener('click', () => {
+      targetIndex = Math.round(targetIndex) - 1;
+    });
+
+    document.getElementById('arrow-right').addEventListener('click', () => {
+      targetIndex = Math.round(targetIndex) + 1;
+    });
+
+    // Wheel & Trackpad
+    let wheelSnapTimeout = null;
+    window.addEventListener('wheel', (e) => {
+      if (isDetailOpen) return;
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      targetIndex += delta * 0.003;
+
+      clearTimeout(wheelSnapTimeout);
+      wheelSnapTimeout = setTimeout(() => {
+        targetIndex = Math.round(targetIndex);
+      }, 150);
+    }, { passive: true });
+
+    // Pointer Drag
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragVelocity = 0;
+    let lastDragX = 0;
+    let lastDragTime = 0;
+
+    window.addEventListener('pointerdown', (e) => {
+      if (isDetailOpen) return;
+      if (e.target.closest('.btn-target') || e.target.closest('#play-ring') || e.target.closest('.decade-tabs-container')) return;
+
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartScroll = currentScroll;
+      lastDragX = e.clientX;
+      lastDragTime = performance.now();
+      dragVelocity = 0;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+
+      if (!isDragging) return;
+      const { ws, gap } = getDimensions();
+      const dx = e.clientX - dragStartX;
+      currentScroll = dragStartScroll - dx / (ws + gap);
+
+      const now = performance.now();
+      const dt = (now - lastDragTime) / 1000;
+      if (dt > 0) {
+        dragVelocity = -(e.clientX - lastDragX) / (ws + gap) / dt;
+      }
+      lastDragX = e.clientX;
+      lastDragTime = now;
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      targetIndex = Math.round(currentScroll + dragVelocity * 0.15);
+    });
+
+    // Keyboard Navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDetail();
+      } else if (!isDetailOpen) {
+        if (e.key === 'ArrowLeft') {
+          targetIndex = Math.round(targetIndex) - 1;
+        } else if (e.key === 'ArrowRight') {
+          targetIndex = Math.round(targetIndex) + 1;
+        } else if (e.key === 'Enter') {
+          if (Math.abs(targetIndex - currentScroll) < 0.3) {
+            openDetail();
+          }
+        }
+      }
+    });
+
+    // Cursor Target Tracking
+    window.addEventListener('pointermove', (e) => {
+      const target = e.target;
+      if (target.closest('.btn-target') || target.closest('button') || target.closest('a')) {
+        cursorState = 'btn';
+      } else {
+        cursorState = 'default';
+      }
+    });
+
+    /* ==========================================================================
+       MAIN RENDER LOOP (requestAnimationFrame)
+       ========================================================================== */
+    let lastFrameTime = performance.now();
+
+    function render(time) {
+      const dt = Math.min((time - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = time;
+
+      // 1. Smooth Scroll Physics
+      if (!isDragging) {
+        currentScroll += (targetIndex - currentScroll) * (1 - Math.exp(-9 * dt));
+        if (Math.abs(targetIndex - currentScroll) < 0.0005) {
+          currentScroll = targetIndex;
+        }
+      }
+
+      // Active Film Index Determination
+      const normScroll = ((currentScroll % 12) + 12) % 12;
+      const newActiveIdx = Math.round(normScroll) % 12;
+
+      if (newActiveIdx !== activeFilmIndex) {
+        const dir = currentScroll > (activeFilmIndex) ? 1 : -1;
+        activeFilmIndex = newActiveIdx;
+        updateCaption(activeFilmIndex, dir);
+      }
+
+      // 2. Geometry calculations
+      const { H, ws, d, gap } = getDimensions();
+      stage.style.setProperty('--ws', `${ws}px`);
+      stage.style.setProperty('--d', `${d}px`);
+
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      const shelfCenterY = screenH / 2 - 40;
+
+      // 3. Cursor Tilt Test & Cursor Lerp
+      cx += (mx - cx) * (1 - Math.exp(-16 * dt));
+      cy += (my - cy) * (1 - Math.exp(-16 * dt));
+
+      const customCursor = document.getElementById('custom-cursor');
+      customCursor.style.transform = `translate3d(${cx}px, ${cy}px, 0px)`;
+
+      const isOnCover = (
+        !isDetailOpen &&
+        Math.abs(mx - screenW / 2) < 0.55 * d &&
+        Math.abs(my - shelfCenterY) < 0.55 * H &&
+        Math.abs(targetIndex - currentScroll) < 0.3
+      );
+
+      if (isOnCover) {
+        if (cursorState !== 'btn') cursorState = 'open';
+        const targetTiltY = ((mx - screenW / 2) / (0.55 * d)) * 9;
+        const targetTiltX = -((my - shelfCenterY) / (H / 2)) * 6;
+        currentTiltY += (targetTiltY - currentTiltY) * (1 - Math.exp(-7 * dt));
+        currentTiltX += (targetTiltX - currentTiltX) * (1 - Math.exp(-7 * dt));
+      } else {
+        if (cursorState === 'open') cursorState = 'default';
+        const targetTiltY = ((mx - screenW / 2) / screenW) * 5;
+        const targetTiltX = 0;
+        currentTiltY += (targetTiltY - currentTiltY) * (1 - Math.exp(-7 * dt));
+        currentTiltX += (targetTiltX - currentTiltX) * (1 - Math.exp(-7 * dt));
+      }
+
+      customCursor.className = `state-${cursorState}`;
+
+      // 4. Update 36 Tapes
+      tapeElements.forEach((tape, v) => {
+        // Relative index r in range [-18, +18]
+        let r = ((v - currentScroll) % 36 + 54) % 36 - 18;
+
+        // Smooth step placement B(r)
+        let Br = 0;
+        if (Math.abs(r) < 1) {
+          Br = (r + Math.sin(Math.PI * r) / Math.PI) / 2;
+        } else {
+          Br = Math.sign(r) * 0.5;
+        }
+
+        const x = r * (ws + gap) + (d - ws + 1.6 * gap) * Br;
+
+        // Culling off-screen tapes
+        if (Math.abs(x) > screenW / 2 + 1.5 * d) {
+          tape.style.visibility = 'hidden';
+          return;
+        }
+        tape.style.visibility = 'visible';
+
+        // Hover Lift Smoothing
+        const liftTarget = (Math.abs(r) > 0.5) ? tapeLiftTargets[v] : 0;
+        tapeLifts[v] += (liftTarget - tapeLifts[v]) * (1 - Math.exp(-12 * dt));
+        const lift = tapeLifts[v];
+
+        // Openness o
+        const o = smoothstep(Math.max(0, 1 - Math.abs(r)));
+
+        // Rotations and Translations
+        const rotY = -90 * o + currentTiltY * o;
+        const rotX = currentTiltX * o;
+        const rotZ = -4.5 * o;
+
+        const transZ = o * 0.2 * H;
+        const transY = -o * 0.025 * H - lift * 0.045 * H;
+
+        // Transform order: translate3d -> rotateZ -> rotateX -> rotateY
+        tape.style.transform = `translate3d(${x}px, ${transY}px, ${transZ}px) rotateZ(${rotZ}deg) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        tape.style.zIndex = Math.round(100 - Math.abs(r) * 4);
+
+        // Face Shading
+        const spineFace = tape.querySelector('.sp');
+        const coverFace = tape.querySelector('.cv');
+
+        if (spineFace) spineFace.style.setProperty('--shade', o * 0.55);
+        if (coverFace) coverFace.style.setProperty('--shade', (1 - o) * 0.5);
+      });
+
+      // 5. Update Play Ring Position & Scale
+      const playRing = document.getElementById('play-ring');
+      const ringLeft = screenW / 2 - 0.5 * d - 6;
+      const ringTop = shelfCenterY + 0.36 * H;
+
+      const ringScale = isDetailOpen ? 0 : smoothstep(Math.max(0, 1 - Math.abs(targetIndex - currentScroll) * 3));
+
+      playRing.style.left = `${ringLeft}px`;
+      playRing.style.top = `${ringTop}px`;
+      playRing.style.transform = `scale(${ringScale})`;
+
+      requestAnimationFrame(render);
+    }
+
+    /* ==========================================================================
+       INITIALIZATION
+       ========================================================================== */
+    window.addEventListener('resize', () => {
+      updateDecadeIndicator(activeFilmIndex);
+    });
+
+    window.onload = () => {
+      buildStage();
+      updateDecadeIndicator(activeFilmIndex);
+      requestAnimationFrame(render);
+    };
+  </script>
+</body>
+</html>
